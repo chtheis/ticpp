@@ -52,13 +52,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef TICPP_INCLUDED
 #define TICPP_INCLUDED
 
-#include "ticppapi.h"
 #include "tinyxml.h"
-#include <sstream>
-#include <vector>
+
 #include <memory>
-#include <exception>
-#include <typeinfo>
 
 /**
 @subpage ticpp is a TinyXML wrapper that uses a lot more C++ ideals.
@@ -112,49 +108,6 @@ namespace ticpp
 	class TICPP_API Text;
 	class TICPP_API Comment;
 	class TICPP_API Attribute;
-
-	/** Wrapper around TiXmlVisitor */
-	class TICPP_API Visitor : public TiXmlVisitor
-	{
-	public:
-		// Overload the TiXmlVisitor functions, wrap objects, call ticpp::Visitor functions
-		/// @internal
-		virtual bool VisitEnter( const TiXmlDocument& doc );
-		/// @internal
-		virtual bool VisitExit( const TiXmlDocument& doc );
-		/// @internal
-		virtual bool VisitEnter( const TiXmlElement& element, const TiXmlAttribute* firstAttribute );
-		/// @internal
-		virtual bool VisitExit( const TiXmlElement& element );
-		/// @internal
-		virtual bool Visit( const TiXmlDeclaration& declaration );
-		/// @internal
-		virtual bool Visit( const TiXmlStylesheetReference& stylesheet );
-		/// @internal
-		virtual bool Visit( const TiXmlText& text );
-		/// @internal
-		virtual bool Visit( const TiXmlComment& comment );
-
-	public:
-		/// Visit a document.
-		virtual bool VisitEnter( const Document& /*doc*/ )			{ return true; }
-		/// Visit a document.
-		virtual bool VisitExit( const Document& /*doc*/ )			{ return true; }
-
-		/// Visit an element.
-		virtual bool VisitEnter( const Element& /*element*/, const Attribute* /*firstAttribute*/ )	{ return true; }
-		/// Visit an element.
-		virtual bool VisitExit( const Element& /*element*/ )		{ return true; }
-
-		/// Visit a declaration
-		virtual bool Visit( const Declaration& /*declaration*/ )	{ return true; }
-		/// Visit a stylesheet reference
-		virtual bool Visit( const StylesheetReference& /*stylesheet*/ )	{ return true; }
-		/// Visit a text node
-		virtual bool Visit( const Text& /*text*/ )					{ return true; }
-		/// Visit a comment node
-		virtual bool Visit( const Comment& /*comment*/ )			{ return true; }
-	};
 
 	/** Wrapper around TiXmlBase */
 	class TICPP_API Base
@@ -416,11 +369,7 @@ namespace ticpp
 		*/
 		void operator=( const Attribute& copy );
 
-		/**
-		@internal
-		Updates the reference count for the old and new pointers.
-		*/
-		Attribute( const Attribute& copy );
+		Attribute( const Attribute& copy ) = delete;
 
 		/*
 		Decrements reference count.

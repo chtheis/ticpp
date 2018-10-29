@@ -23,60 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef TIXML_USE_TICPP
 
 #include "ticpp.h"
-#include "ticpprc.h"
-#include "tinyxml.h"
-#include <sstream>
 
 using namespace ticpp;
-
-// In the following Visitor functions, casting away const should be safe, as the object can only be referred to by a const &
-bool Visitor::VisitEnter( const TiXmlDocument& doc )
-{
-	return VisitEnter( Document( const_cast< TiXmlDocument* >( &doc ) ) );
-}
-
-bool Visitor::VisitExit( const TiXmlDocument& doc )
-{
-	return VisitEnter( Document( const_cast< TiXmlDocument* >( &doc ) ) );
-}
-
-bool Visitor::VisitEnter( const TiXmlElement& element, const TiXmlAttribute* firstAttribute )
-{
-	if ( 0 != firstAttribute )
-	{
-		Attribute attribute( const_cast< TiXmlAttribute* >( firstAttribute ) );
-		return VisitEnter( Element( const_cast< TiXmlElement* >( &element ) ), &attribute );
-	}
-	else
-	{
-		return VisitEnter( Element( const_cast< TiXmlElement* >( &element ) ), 0 );
-	}
-}
-
-bool Visitor::VisitExit( const TiXmlElement& element )
-{
-	return VisitExit( Element( const_cast< TiXmlElement* >( &element ) ) );
-}
-
-bool Visitor::Visit( const TiXmlDeclaration& declaration )
-{
-	return Visit( Declaration( const_cast< TiXmlDeclaration* >( &declaration ) ) );
-}
-
-bool Visitor::Visit( const TiXmlStylesheetReference& stylesheet )
-{
-	return Visit( StylesheetReference( const_cast< TiXmlStylesheetReference* >( &stylesheet ) ) );
-}
-
-bool Visitor::Visit( const TiXmlText& text )
-{
-	return Visit( Text( const_cast< TiXmlText* >( &text ) ) );
-}
-
-bool Visitor::Visit( const TiXmlComment& comment )
-{
-	return Visit( Comment( const_cast< TiXmlComment* >( &comment ) ) );
-}
 
 Attribute::Attribute()
 {
@@ -97,18 +45,6 @@ Attribute::Attribute( const std::string& name, const std::string& value )
 }
 
 void Attribute::operator=( const Attribute& copy )
-{
-	// Dropping the reference to the old object
-	this->m_impRC->DecRef();
-
-	// Pointing to the new Object
-	SetTiXmlPointer( copy.m_tiXmlPointer );
-
-	// The internal tixml pointer changed in the above line
-	this->m_impRC->IncRef();
-}
-
-Attribute::Attribute( const Attribute& copy ) : Base()
 {
 	// Dropping the reference to the old object
 	this->m_impRC->DecRef();
